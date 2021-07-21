@@ -1,4 +1,4 @@
-from src.image_recognizer import ImageRecognizer
+from app.src.image_recognizer import ImageRecognizer
 import unittest
 import os
 
@@ -8,6 +8,7 @@ class ImageRecognizerTestCase(unittest.TestCase):
 
     def setUp(self):
         self.recognizer = ImageRecognizer()
+        self.recognizer.is_debug = os.getenv('DEBUG', 'False').lower() in ('true', '1', 't')
 
     def test_recognize(self):
         image_dir = os.path.dirname(os.path.realpath(__file__)) + "/image_recognizer_examples"
