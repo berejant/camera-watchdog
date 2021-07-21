@@ -16,7 +16,8 @@ class ImageRecognizer:
 
     def check_is_parking_slot_free(self, image: np.ndarray) -> bool:
         image = self.crop_image_part_in_percent(image, 45, 74, 49, 75)
-        return self.count_pixel_percentage(image, [90, 90, 100], [175, 175, 190]) > 70
+        pixel_percentage = self.count_pixel_percentage(image, [90, 90, 100], [175, 175, 190])
+        return bool(pixel_percentage > 70)
 
     def check_is_gate_closed(self, image: np.ndarray) -> bool:
         #  @todo implement is gate closed checks
@@ -28,9 +29,9 @@ class ImageRecognizer:
         upper_pixel.reverse()
         mask = cv2.inRange(image, np.array(lower_pixel), np.array(upper_pixel))
 
-        total_pixel_count = image.shape[0] * image.shape[1]
+        total_pixel_count = int(image.shape[0] * image.shape[1])
         pixel_count = int(np.sum(mask == 255))
-        percentage = pixel_count / total_pixel_count * 100
+        percentage = float(pixel_count / total_pixel_count * 100)
 
         if self.is_debug:
             print(pixel_count, total_pixel_count, percentage)
