@@ -29,7 +29,7 @@ class ImageRecognizer:
         mask = cv2.inRange(image, np.array(lower_pixel), np.array(upper_pixel))
 
         total_pixel_count = image.shape[0] * image.shape[1]
-        pixel_count = np.sum(mask == 255)
+        pixel_count = int(np.sum(mask == 255))
         percentage = pixel_count / total_pixel_count * 100
 
         if self.is_debug:
