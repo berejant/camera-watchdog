@@ -1,3 +1,4 @@
+from decouple import config
 from app.src.image_recognizer import ImageRecognizer
 import unittest
 import os
@@ -8,7 +9,7 @@ class ImageRecognizerTestCase(unittest.TestCase):
 
     def setUp(self):
         self.recognizer = ImageRecognizer()
-        self.recognizer.is_debug = os.getenv('DEBUG', 'False').lower() in ('true', '1', 't')
+        self.recognizer.is_debug = config('DEBUG', default=False, cast=bool)
 
     def test_recognize(self):
         image_dir = os.path.dirname(os.path.realpath(__file__)) + "/image_recognizer_examples"
@@ -32,7 +33,8 @@ class ImageRecognizerTestCase(unittest.TestCase):
                 if not os.path.isfile(image_filepath):
                     continue
 
-                if image_filepath[-4:].lower() != '.jpg':
+                extension = os.path.splitext(image_filepath)[1].lower()
+                if extension != '.jpg' and extension != '.jpeg':
                     print(filename + ' is not JPG file')
                     continue
 
