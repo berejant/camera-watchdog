@@ -57,7 +57,7 @@ class Watchdog:
         high_resolution = self.recognizer.crop_image_part_in_percent(high_resolution, 32, 96, 15, 73)
         car_number = detect(high_resolution)
         if car_number is not None:
-            text += "\nАвто " + self.get_car_number_label(car_number)
+            text += " " + self.get_car_number_label(car_number)
 
         self.send_snapshot(text=text)
 
