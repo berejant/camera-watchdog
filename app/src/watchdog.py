@@ -2,6 +2,7 @@ from .storage import Storage
 from .camera_client import CameraClient
 from .image_recognizer import ImageRecognizer
 import telegram
+from src.number_detector import detect
 
 class Watchdog:
     storage: Storage
@@ -49,13 +50,9 @@ class Watchdog:
         self.send_snapshot(text="Паркинг свободен")
 
     def handle_is_not_parking_slot_free(self):
-        if self.detect is None:
-            from src.number_detector import detect
-            self.detect = detect
-
         high_resolution = self.camera_client.get_high_resolution_snapshot()
         high_resolution = self.recognizer.crop_image_part_in_percent(high_resolution, 32, 96, 15, 73)
-        car_number = self.detect(high_resolution)
+        car_number = detect(high_resolution)
         text = "Паркинг занят"
         if car_number is not None:
             text += "\nАвто " + car_number
