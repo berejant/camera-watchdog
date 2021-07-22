@@ -5,11 +5,13 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt update && apt install -y git libsm6 libxrender1 libgl1 libfontconfig1 libxtst6 libturbojpeg
 
 WORKDIR /app
+COPY app/src/number_detector.py /app/src/number_detector.py
 RUN git clone  https://github.com/ria-com/nomeroff-net.git \
   && cd nomeroff-net/ \
   && sed -i 's/^tensorflow/#&/' requirements.txt \
   && pip install --no-cache-dir -r requirements.txt \
-  && cd ../
+  && cd ../ \
+  && python src/number_detector.py
 
 COPY app/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
