@@ -2,7 +2,8 @@ from .storage import Storage
 from .camera_client import CameraClient
 from .image_recognizer import ImageRecognizer
 import telegram
-# from src.number_detector import detect
+from src.number_detector import detect
+from decouple import config
 
 class Watchdog:
     storage: Storage
@@ -52,11 +53,11 @@ class Watchdog:
     def handle_is_not_parking_slot_free(self):
         text = "Паркинг занят"
 
-#     high_resolution = self.camera_client.get_high_resolution_snapshot()
-   #     high_resolution = self.recognizer.crop_image_part_in_percent(high_resolution, 32, 96, 15, 73)
-   #     car_number = detect(high_resolution)
-  #      if car_number is not None:
-  #          text += "\nАвто " + car_number
+        high_resolution = self.camera_client.get_high_resolution_snapshot()
+        high_resolution = self.recognizer.crop_image_part_in_percent(high_resolution, 32, 96, 15, 73)
+        car_number = detect(high_resolution)
+        if car_number is not None:
+            text += "\nАвто " + self.get_car_number_label(car_number)
 
         self.send_snapshot(text=text)
 
@@ -69,3 +70,6 @@ class Watchdog:
     def send_snapshot(self, text=None):
         self.telegram_bot.send_photo(chat_id=self.telegram_chat_id, photo=self.current_snapshot, caption=text)
 
+    @staticmethod
+    def get_car_number_label(car_number):
+        return config('CAR_NUMBER_' + car_number, car_number)

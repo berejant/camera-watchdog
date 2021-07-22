@@ -1,6 +1,4 @@
 import numpy as np
-from PIL import Image
-import io
 import cv2
 
 
@@ -8,7 +6,7 @@ class ImageRecognizer:
     is_debug = False
 
     def recognize(self, raw_image: bytes) -> dict:
-        image = cv2.cvtColor(np.array(Image.open(io.BytesIO(raw_image))), cv2.COLOR_RGB2BGR)
+        image = cv2.imdecode(np.asarray(bytearray(raw_image), dtype=np.uint8), cv2.IMREAD_COLOR)
         return {
             "is_parking_slot_free": self.check_is_parking_slot_free(image),
             "is_gate_closed": self.check_is_gate_closed(image),

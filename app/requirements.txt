@@ -2,7 +2,6 @@ numpy>=1.19.*
 opencv-python>=4.5.3.56
 requests>=2.26.0
 onvif-zeep>=0.2.12
-Pillow>=8.3.1
 schedule>=1.1.0
 python-telegram-bot>=13.7
 python-decouple>=3.4
