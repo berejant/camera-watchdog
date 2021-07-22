@@ -14,10 +14,19 @@ RUN git clone  https://github.com/ria-com/nomeroff-net.git \
 COPY app/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 COPY app /app
+
 ENV STORAGE_DIR storage/
 
-VOLUME ["/app/storage", "/app/nomeroff-net/NomeroffNet/Base/mcm/models"]
+ENV CAMERA_IP 0.0.0.0
+ENV CAMERA_PORT 80
+ENV CAMERA_USERNAME ""
+ENV CAMERA_PASSOWRD ""
+
+ENV TELEGRAM_TOKEN ""
+ENV TELEGRAM_CHAT_ID ""
+
+VOLUME ["/app/storage", "/app/nomeroff-net/NomeroffNet/Base/mcm/data/models"]
 EXPOSE 8000
 
-ENTRYPOINT ["/app/webhook_listener.py"]
+ENTRYPOINT ["/app/http_server.py"]
 HEALTHCHECK CMD curl -I --fail http://localhost:8000 || exit 1

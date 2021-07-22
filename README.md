@@ -9,7 +9,7 @@ Build
 > docker build -t berejant/camera-watchdog:v0.1 .
 
 Run
-> docker run  --name camera-watchdog -p 8000:8000 --rm --env-file=.env -v storage:/app/storage -v models:/app/nomeroff-net/NomeroffNet/Base/mcm/models  -it berejant/camera-watchdog:v0.1
+> docker run --name camera-watchdog -p 8000:8000 --rm --env-file=.env --volume storage:/app/storage:rw --volume models:/app/nomeroff-net/NomeroffNet/Base/mcm/data/models:rw  -it berejant/camera-watchdog:v0.1
 
 Bash
 > docker exec -it camera-watchdog /bin/bash 
