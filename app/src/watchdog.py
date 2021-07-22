@@ -67,13 +67,11 @@ class Watchdog:
                 getattr(self, method)()
 
     def handle_is_parking_slot_free(self):
-        self.telegram_bot.send_message(chat_id=self.telegram_chat_id, text="Паркинг свободен")
-        self.send_snapshot()
+        self.send_snapshot(text="Паркинг свободен")
         print('parking slot free')
 
     def handle_is_not_parking_slot_free(self):
-        self.telegram_bot.send_message(chat_id=self.telegram_chat_id, text="Паркинг занят")
-        self.send_snapshot()
+        self.send_snapshot(text="Паркинг занят")
         print('parking slot free')
 
     def handle_is_gate_closed(self):
@@ -82,6 +80,6 @@ class Watchdog:
     def handle_is_not_gate_closed(self):
         print('gate opened')
 
-    def send_snapshot(self):
-        self.telegram_bot.send_photo(chat_id=self.telegram_chat_id, photo=self.current_snapshot)
+    def send_snapshot(self, text=None):
+        self.telegram_bot.send_photo(chat_id=self.telegram_chat_id, photo=self.current_snapshot, caption=text)
 
