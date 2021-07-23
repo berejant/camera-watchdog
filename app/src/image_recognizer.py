@@ -14,8 +14,12 @@ class ImageRecognizer:
 
     def check_is_parking_slot_free(self, image: np.ndarray) -> bool:
         image = self.crop_image_part_in_percent(image, 39, 92, 28, 76)
-        pixel_percentage = self.count_pixel_percentage(image, [90, 90, 100], [240, 175, 190])
-        return bool(pixel_percentage > 40)
+        pixel_percentage = self.count_pixel_percentage(image, [90, 90, 100], [256, 215, 190])
+
+        if self.is_debug:
+            print('parking slot fill percentage: ' + str(pixel_percentage))
+
+        return bool(pixel_percentage > 70)
 
     def check_is_gate_closed(self, image: np.ndarray) -> bool:
         #  @todo implement is gate closed checks
@@ -34,7 +38,7 @@ class ImageRecognizer:
         if self.is_debug:
             print(pixel_count, total_pixel_count, percentage)
             result = cv2.bitwise_and(image, image, mask = ~mask)
-            cv2.imwrite('result.jpg', result)
+            cv2.imwrite('storage/result.jpg', result)
             cv2.imshow('result', result)
             cv2.waitKey(0)
 
