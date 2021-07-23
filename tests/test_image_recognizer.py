@@ -41,4 +41,4 @@ class ImageRecognizerTestCase(unittest.TestCase):
                 with open(image_filepath, "rb") as file:
                     actual_value = self.recognizer.recognize(file.read())[key]
 
-                self.assertEqual(actual_value, expected_value, 'Image detection failed. ' + key + ' is not ' + str(expected_value))
+                self.assertEqual(actual_value, expected_value, 'Image detection failed. ' + key + ' is not ' + str(expected_value) + ' on image ' + filename)

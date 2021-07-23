@@ -14,8 +14,8 @@ class ImageRecognizer:
 
     def check_is_parking_slot_free(self, image: np.ndarray) -> bool:
         image = self.crop_image_part_in_percent(image, 39, 92, 28, 76)
-        pixel_percentage = self.count_pixel_percentage(image, [90, 90, 100], [175, 175, 190])
-        return bool(pixel_percentage > 70)
+        pixel_percentage = self.count_pixel_percentage(image, [90, 90, 100], [240, 175, 190])
+        return bool(pixel_percentage > 40)
 
     def check_is_gate_closed(self, image: np.ndarray) -> bool:
         #  @todo implement is gate closed checks
