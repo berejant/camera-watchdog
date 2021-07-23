@@ -1,5 +1,5 @@
 from typing import Optional
-from requests import Session, Request
+from requests import Session
 from requests.exceptions import RequestException
 from decouple import config
 import cv2

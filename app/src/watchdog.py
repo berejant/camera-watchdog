@@ -4,6 +4,9 @@ from .image_recognizer import ImageRecognizer
 import telegram
 from src.number_detector import detect
 from decouple import config
+import re
+import time
+from typing import Optional
 
 class Watchdog:
     storage: Storage
@@ -12,6 +15,7 @@ class Watchdog:
     telegram_chat_id: str
     current_snapshot: bytes
     current_state: dict
+    car_number_pattern: re.Pattern
 
     def __init__(self, storage: Storage, camera_client: CameraClient, telegram_bot: telegram.Bot, telegram_chat_id: str):
         self.recognizer = ImageRecognizer()
@@ -19,6 +23,7 @@ class Watchdog:
         self.camera_client = camera_client
         self.telegram_bot = telegram_bot
         self.telegram_chat_id = telegram_chat_id
+        self.car_number_pattern = re.compile("^[A-Z]{2}[0-9]{4}[A-Z]{2}$")
         self.current_state = self.storage.load_state()
         self.pull_snapshot()
 
@@ -53,9 +58,7 @@ class Watchdog:
     def handle_is_not_parking_slot_free(self):
         text = "Паркинг занят"
 
-        high_resolution = self.camera_client.get_high_resolution_snapshot()
-        high_resolution = self.recognizer.crop_image_part_in_percent(high_resolution, 32, 96, 15, 73)
-        car_number = detect(high_resolution)
+        car_number = self.detect_car_number()
         if car_number is not None:
             text += " " + self.get_car_number_label(car_number)
 
@@ -72,6 +75,25 @@ class Watchdog:
             chat_id=self.telegram_chat_id, disable_notification=disable_notification,
             photo=self.current_snapshot, caption=text
         )
+
+    def detect_car_number(self) -> Optional[str]:
+        retry_count = config("NOMEROFF_RETRY_COUNT", 3, cast=int)
+        retry_delay = config("NOMEROFF_RETRY_DELAY", 3, cast=int)
+
+        for attempt in range(retry_count):
+            next_attempt_start_time = time.time() + retry_delay
+            high_resolution = self.camera_client.get_high_resolution_snapshot()
+            high_resolution = self.recognizer.crop_image_part_in_percent(high_resolution, 32, 96, 15, 73)
+            car_number = detect(high_resolution)
+
+            if car_number and self.car_number_pattern.match(car_number):
+                return car_number
+
+            next_attempt_delay = next_attempt_start_time - time.time()
+            if next_attempt_delay > 0.2:
+                time.sleep(next_attempt_delay)
+
+        return None
 
     @staticmethod
     def get_car_number_label(car_number):
