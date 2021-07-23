@@ -67,8 +67,11 @@ class Watchdog:
     def handle_is_not_gate_closed(self):
         print('gate opened')
 
-    def send_snapshot(self, text=None):
-        self.telegram_bot.send_photo(chat_id=self.telegram_chat_id, photo=self.current_snapshot, caption=text)
+    def send_snapshot(self, text=None, disable_notification=False):
+        self.telegram_bot.send_photo(
+            chat_id=self.telegram_chat_id, disable_notification=disable_notification,
+            photo=self.current_snapshot, caption=text
+        )
 
     @staticmethod
     def get_car_number_label(car_number):

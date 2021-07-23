@@ -25,7 +25,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             watchdog.pull_snapshot()
         elif self.path == '/send_image':
             watchdog.pull_snapshot()
-            watchdog.send_snapshot()
+            watchdog.send_snapshot(disable_notification=True)
 
     def do_HEAD(self):
         self.send_response(200)
