@@ -18,8 +18,29 @@ class ImageRecognizer:
 
         if self.is_debug:
             print('parking slot fill percentage: ' + str(pixel_percentage))
+            cv2.imwrite('storage/result.jpg', image)
 
-        return bool(pixel_percentage > 70)
+        if pixel_percentage > 65:
+            return True
+
+        if pixel_percentage < 40:
+            return False
+
+        print(image.shape)
+
+        # try to check is border line visible on image
+        border_line_parts = [
+            self.crop_image_part_in_percent(image, 10, 11, 38, 39),
+            self.crop_image_part_in_percent(image, 20, 21, 27, 28),
+            self.crop_image_part_in_percent(image, 3, 4, 48, 49),
+        ]
+
+        border_line_parts_founded = 0
+        for line_part in border_line_parts:
+            if self.count_pixel_percentage(line_part, [190, 185, 190], [230, 230, 250]) == 100:
+                border_line_parts_founded += 1
+
+        return border_line_parts_founded > len(border_line_parts) * 0.75
 
     def check_is_gate_closed(self, image: np.ndarray) -> bool:
         #  @todo implement is gate closed checks
