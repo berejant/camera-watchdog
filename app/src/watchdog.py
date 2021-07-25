@@ -97,4 +97,4 @@ class Watchdog:
 
     @staticmethod
     def get_car_number_label(car_number):
-        return config('CAR_NUMBER_' + car_number, car_number)
+        return config('CAR_NUMBER_' + car_number[2:6], car_number)
