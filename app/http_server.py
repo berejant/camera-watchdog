@@ -30,7 +30,6 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         if self.path == '/send_snapshot':
-            self.send_response(500)
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length).decode('utf-8')
             print(post_data)
