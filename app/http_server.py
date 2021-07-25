@@ -6,6 +6,7 @@ from src.camera_client import CameraClient
 from src.watchdog import Watchdog
 from http.server import HTTPServer
 from http.server import BaseHTTPRequestHandler
+from urllib.parse import parse_qs
 
 camera_client = CameraClient(config('CAMERA_IP'), config('CAMERA_PORT', 80),
                       config('CAMERA_USERNAME'), config('CAMERA_PASSWORD'))
@@ -23,9 +24,24 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
         if self.path == '/webhook':
             watchdog.pull_snapshot()
-        elif self.path == '/send_image':
+        elif self.path == '/send_snapshot':
             watchdog.pull_snapshot()
             watchdog.send_snapshot(disable_notification=True)
+
+    def do_POST(self):
+        if self.path == '/send_snapshot':
+            self.send_response(500)
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length).decode('utf-8')
+            print(post_data)
+            post_data = parse_qs(post_data)
+            text = post_data["text"][0] if "text" in post_data else None
+            watchdog.send_snapshot(text=text)
+
+            self.send_response(200)
+            self.send_header('Content-type', 'text/plain')
+            self.send_header('Content-Length', '0')
+            self.end_headers()
 
     def do_HEAD(self):
         self.send_response(200)
