@@ -26,7 +26,8 @@ class ImageRecognizer:
         if pixel_percentage < 40:
             return False
 
-        print(image.shape)
+        if self.is_debug:
+            print(image.shape)
 
         # try to check is border line visible on image
         border_line_parts = [
