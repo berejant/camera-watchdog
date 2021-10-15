@@ -2,7 +2,8 @@ FROM python:3.7
 
 WORKDIR /app
 COPY app/requirements.txt /app/requirements.txt
-RUN apt-get update && apt-get install -y python3-opencv && apt-get clean && pip install --no-cache-dir -r requirements.txt
+RUN apt-get update && apt-get install -y --no-install-recommends python3-opencv=4.5.1+dfsg-5 && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir -r requirements.txt
 COPY app /app
 
 ENV STORAGE_DIR storage/
