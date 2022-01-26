@@ -21,8 +21,10 @@ class Storage:
         dir = self.base_dir + time.strftime("%Y-%m-%d")
         Path(dir).mkdir(parents=True, exist_ok=True)
         filename = time.strftime("%Y-%m-%d-%H-%M-%S") + '.jpg'
-        with open(dir + '/' + filename, "wb") as f:
-            f.write(image)
+        filepath = dir + '/' + filename
+        with open(filepath, "wb") as f:
+            size = f.write(image)
+            print('Save image to path: ', filepath, size)
 
     def clear_outdated_files(self):
         min_datetime = datetime.now() - timedelta(days=3)

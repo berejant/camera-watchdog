@@ -30,6 +30,7 @@ class Watchdog:
     def pull_snapshot(self):
         snapshot = self.camera_client.get_snapshot()
         if snapshot is None:
+            print("Snapshot not loaded")
             return
         self.current_snapshot = snapshot
         self.storage.save_image(self.current_snapshot)
@@ -37,6 +38,7 @@ class Watchdog:
         previous_state = self.current_state
         self.current_state = self.recognizer.recognize(self.current_snapshot)
         self.storage.save_state(self.current_state)
+        print(self.current_state)
 
         if previous_state is not None:
             self.execute_handlers(previous_state, self.current_state)
